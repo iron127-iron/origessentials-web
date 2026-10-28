@@ -148,6 +148,9 @@
             slug="cafora-host"
             status="verified"
             api="Pterodactyl Client API"
+            base_url="https://panel.caforahost.com/api/client"
+            supported_features="伺服器清單、狀態、電源操作、主控台、檔案管理"
+            limitations="—"
             note="已驗證：伺服器清單、狀態、電源、主控台、檔案操作"
           />
           <ProviderRow
@@ -155,6 +158,9 @@
             slug="chao-hua-jia"
             status="pending"
             api="待確認"
+            base_url="—"
+            supported_features="—"
+            limitations="尚未驗證 API"
             note="等待 API 資料驗證"
           />
           <ProviderRow
@@ -162,6 +168,9 @@
             slug="ice-host"
             status="pending"
             api="待確認"
+            base_url="—"
+            supported_features="—"
+            limitations="尚未驗證 API"
             note="等待 API 資料驗證"
           />
           <ProviderRow
@@ -169,6 +178,9 @@
             slug="diamond-hosting"
             status="pending"
             api="待確認"
+            base_url="—"
+            supported_features="—"
+            limitations="尚未驗證 API"
             note="等待 API 資料驗證"
           />
           <ProviderRow
@@ -176,6 +188,9 @@
             slug="pterodactyl"
             status="partial"
             api="Pterodactyl API v1"
+            base_url="依託管商設定"
+            supported_features="核心 API 框架已實作，部分端點待驗證"
+            limitations="不同供應商可能有不同的 API 啟用狀態"
             note="核心功能實作中，部分 API 端點待驗證"
           />
           <ProviderRow
@@ -183,7 +198,10 @@
             slug="custom"
             status="supported"
             api="自訂 Adapter"
-            note="提供 Adapter 開發文件與範例，可自行擴充"
+            base_url="—"
+            supported_features="提供 Adapter 開發文件與範例"
+            limitations="需自行編寫 Adapter 程式碼"
+            note="可自行擴充新的託管商"
           />
         </div>
       </div>
@@ -219,6 +237,6 @@
 
 <script setup lang="ts">
 import FeatureCard from '@/components/home/FeatureCard.vue';
-import ProviderRow from '@/components/home/ProviderRow.vue';
+import ProviderRow from '@/components/providers/ProviderRow.vue';
 import CheckIcon from '@/components/icons/CheckIcon.vue';
 </script>

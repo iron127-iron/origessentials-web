@@ -46,26 +46,26 @@ import SidebarLink from '@/components/docs/SidebarLink.vue';
 const route = useRoute();
 const activeDoc = computed(() => route.params.page as string || 'installation');
 
-// 動態載入文檔組件
-const docComponents: Record<string, any> = {
-  'installation': () => import('@/docs/installation.md.vue' as any),
-  'architecture': () => import('@/docs/architecture.md.vue' as any),
-  'plugin-installation': () => import('@/docs/plugin-installation.md.vue' as any),
-  'plugin-configuration': () => import('@/docs/plugin-configuration.md.vue' as any),
-  'plugin-connection': () => import('@/docs/plugin-connection.md.vue' as any),
-  'cloudflare-pages': () => import('@/docs/cloudflare-pages.md.vue' as any),
-  'workers-setup': () => import('@/docs/workers-setup.md.vue' as any),
-  'd1-database': () => import('@/docs/d1-database.md.vue' as any),
-  'secrets-setup': () => import('@/docs/secrets-setup.md.vue' as any),
-  'hosting-providers': () => import('@/docs/hosting-providers.md.vue' as any),
-  'caforahost-api': () => import('@/docs/caforahost-api.md.vue' as any),
-  'provider-adapter-development': () => import('@/docs/provider-adapter-development.md.vue' as any),
-  'permissions': () => import('@/docs/permissions.md.vue' as any),
-  'security': () => import('@/docs/security-doc.md.vue' as any),
-  'backup-restore': () => import('@/docs/backup-restore.md.vue' as any),
-  'migration': () => import('@/docs/migration.md.vue' as any),
-  'troubleshooting': () => import('@/docs/troubleshooting.md.vue' as any),
-  'contributing': () => import('@/docs/contributing.md.vue' as any),
+// 動態載入文檔組件（md2vue.mjs 預編譯 content/docs/*.md → src/docs/*.md.vue）
+const docComponents: Record<string, () => Promise<unknown>> = {
+  'installation': () => import('@docs/installation.md.vue'),
+  'architecture': () => import('@docs/architecture.md.vue'),
+  'plugin-installation': () => import('@docs/plugin-installation.md.vue'),
+  'plugin-configuration': () => import('@docs/plugin-configuration.md.vue'),
+  'plugin-connection': () => import('@docs/plugin-connection.md.vue'),
+  'cloudflare-pages': () => import('@docs/cloudflare-pages.md.vue'),
+  'workers-setup': () => import('@docs/workers-setup.md.vue'),
+  'd1-database': () => import('@docs/d1-database.md.vue'),
+  'secrets-setup': () => import('@docs/secrets-setup.md.vue'),
+  'hosting-providers': () => import('@docs/hosting-providers.md.vue'),
+  'caforahost-api': () => import('@docs/caforahost-api.md.vue'),
+  'provider-adapter-development': () => import('@docs/provider-adapter-development.md.vue'),
+  'permissions': () => import('@docs/permissions.md.vue'),
+  'security': () => import('@docs/security-doc.md.vue'),
+  'backup-restore': () => import('@docs/backup-restore.md.vue'),
+  'migration': () => import('@docs/migration.md.vue'),
+  'troubleshooting': () => import('@docs/troubleshooting.md.vue'),
+  'contributing': () => import('@docs/contributing.md.vue'),
 };
 
 const currentDocComponent = computed(() => {

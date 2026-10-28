@@ -1,0 +1,5 @@
+<template>
+  <div class="doc-content prose prose-invert max-w-none">
+    ---<br>title: 貢獻指南<br>description: 如何參與 OrigEssentials 開發<br>---<br><h1>貢獻指南</h1><br><h2>開發環境</h2><br><br>``<code>bash<h1>複製環境變數</h1><br>cp panel/.env.example panel/.env.local<br>cp website/.env.example website/.env.local<br><h1>安裝依賴</h1><br>npm install  # 在各子專案執行<br></code>`<code><br><h2>程式碼風格</h2><br><h3>Java</h3><br>- Google Java Style Guide<br>- </code>./gradlew spotlessApply<code> 自動格式化<br><h3>TypeScript</h3><br>- ESLint + Prettier<br>- </code>npm run format<code> 自動修復<br><h2>提交規範</h2><br><br>使用 Conventional Commits：<br></code>`<code><br>feat(panel): 新增角色權限管理<br>fix(plugin): 修復配對碼重複問題<br>docs: 更新 Cafora Host 文件<br>chore: 升級依賴版本<br>test: 新增 API 測試<br></code>`<code><br><h2>Pull Request 流程</h2><br><br>1. Fork 倉庫<br>2. 建立功能分支：</code>git checkout -b feature/your-feature<code><br>3. 提交變更<br>4. 推送並建立 PR<br>5. 通過 CI 檢查<br><h2>測試要求</h2><br><br>所有新功能必須包含測試：<br></code>`<code>bash<br>cd plugin &amp;&amp; ./gradlew test<br>cd panel &amp;&amp; npm run test<br>cd website &amp;&amp; npm run build<br></code>``
+  </div>
+</template>

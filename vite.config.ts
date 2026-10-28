@@ -1,23 +1,14 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
-import { resolve } from 'path';
+import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
-  plugins: [
-    vue(),
-    viteStaticCopy({
-      targets: [
-        { src: 'content/docs/*.md', dest: 'docs' },
-        { src: 'public/*', dest: '.' },
-      ],
-    }),
-  ],
+  plugins: [vue()],
   base: '/',
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
-      '@docs': resolve(__dirname, 'content/docs'),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@docs': fileURLToPath(new URL('./src/docs', import.meta.url)),
     },
   },
   build: {

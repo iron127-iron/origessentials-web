@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node md2vue.mjs && vite build",
     "preview": "vite preview",
     "lint": "eslint src/",
-    "lint:fix": "eslint src/ --fix"
+    "lint:fix": "eslint src/ --fix",
+    "md2vue": "node md2vue.mjs"
   },
   "dependencies": {
     "vue": "^3.4.21",
@@ -23,6 +24,7 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
     "vite": "^5.1.6",
-    "vite-plugin-static-copy": "^1.0.2"
+    "vite-plugin-vue-markdown": "^0.23.8",
+    "@tailwindcss/typography": "^0.5.20"
   }
 }
