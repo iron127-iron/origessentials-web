@@ -9,8 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
-    "md2vue": "node md2vue.mjs",
-    "deploy": "wrangler pages deploy dist --project-name=origessentials-web --commit-dirty=true"
+    "md2vue": "node md2vue.mjs"
   },
   "dependencies": {
     "vue": "^3.4.21",
