@@ -6,29 +6,111 @@ import { existsSync } from 'node:fs';
 const DOCS_DIR = 'content/docs';
 const OUTPUT_DIR = 'src/docs';
 
-// Simple markdown → HTML converter (handles headings, code, lists, links, bold)
+/** Simple, correct markdown → HTML converter */
 function mdToHtml(md) {
-  let html = md
-    // Escape HTML entities
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    // Code blocks (fenced)
-    .replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
-      return `<pre><code class="language-${lang || 'text'}">${code.trim()}</code></pre>`;
-    })
-    // Inline code
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
+  // Strip YAML frontmatter
+  md = md.replace(/^---\n[\s\S]*?\n---\n?/, '');
+
+  const lines = md.split('\n');
+  const htmlLines = [];
+  let inCodeBlock = false;
+  let codeLang = '';
+  let codeBuffer = [];
+  let inList = false;
+
+  function flushCode() {
+    if (codeBuffer.length > 0) {
+      const escaped = codeBuffer.join('\n');
+      htmlLines.push(`<pre><code class="language-${codeLang || 'text'}">${escaped}</code></pre>`);
+      codeBuffer = [];
+    }
+    inCodeBlock = false;
+  }
+
+  function flushList() {
+    if (inList) {
+      htmlLines.push(inList === 'ul' ? '</ul>' : '</ol>');
+      inList = false;
+    }
+  }
+
+  function esc(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  for (const line of lines) {
+    // Code fence
+    if (line.startsWith('```')) {
+      if (!inCodeBlock) {
+        inCodeBlock = true;
+        codeLang = line.slice(3).trim();
+        codeBuffer = [];
+      } else {
+        flushCode();
+      }
+      continue;
+    }
+
+    if (inCodeBlock) {
+      codeBuffer.push(esc(line));
+      continue;
+    }
+
+    flushList();
+
+    // Empty line
+    if (line.trim() === '') continue;
+
     // Headings
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    // Bold
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    // Line breaks → <br>
-    .replace(/\n/g, '<br>');
-  // Clean up double <br> after block elements
-  html = html.replace(/(<\/(?:h[1-3]|pre|p|ul|ol|li|blockquote)>)<br>/g, '$1');
-  html = html.replace(/<br>(<h[1-3]|<pre|<ul|<ol)/g, '$1');
-  return html;
+    if (line.startsWith('### ')) { htmlLines.push(`<h3>${esc(line.slice(4))}</h3>`); continue; }
+    if (line.startsWith('## '))  { htmlLines.push(`<h2>${esc(line.slice(3))}</h2>`); continue; }
+    if (line.startsWith('# '))   { htmlLines.push(`<h1>${esc(line.slice(2))}</h1>`); continue; }
+
+    // Blockquote
+    if (line.startsWith('> ')) { htmlLines.push(`<blockquote><p>${esc(line.slice(2))}</p></blockquote>`); continue; }
+
+    // Unordered list
+    if (line.startsWith('- ')) {
+      if (!inList) { htmlLines.push('<ul>'); inList = 'ul'; }
+      htmlLines.push(`<li>${processInline(esc(line.slice(2)))}</li>`);
+      continue;
+    }
+
+    // Ordered list
+    const orderedMatch = line.match(/^(\d+)\. (.+)$/);
+    if (orderedMatch) {
+      if (!inList) { htmlLines.push('<ol>'); inList = 'ol'; }
+      htmlLines.push(`<li>${processInline(esc(orderedMatch[2]))}</li>`);
+      continue;
+    }
+
+    // Horizontal rule
+    if (line.match(/^---+$/)) { htmlLines.push('<hr>'); continue; }
+
+    // Table
+    if (line.includes('|')) {
+      htmlLines.push(`<p>${processInline(esc(line))}</p>`);
+      continue;
+    }
+
+    // Paragraph
+    htmlLines.push(`<p>${processInline(esc(line))}</p>`);
+  }
+
+  flushCode();
+  flushList();
+
+  return htmlLines.join('\n');
+}
+
+function processInline(text) {
+  // Bold
+  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Inline code
+  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // Links
+  text = text.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  return text;
 }
 
 async function main() {
